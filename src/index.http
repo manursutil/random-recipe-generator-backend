@@ -7,11 +7,17 @@ Content-Type: application/json
 }
 
 ###
+# @name login
 
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "test@test.com",
+    "email": "test123@test.com",
     "password": "password123"
 }
+
+###
+
+GET http://localhost:3000/auth/me
+Cookie: {{login.response.headers.Set-Cookie}}

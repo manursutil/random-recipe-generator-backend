@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { signupValidator } from "../schemas/signup-schema";
-import { getUserByEmail, insertUser } from "../db/queries";
+import { getUserByEmail, getUserById, insertUser } from "../db/queries";
 import { dbConn } from "../db/db";
 import { cookieOptions, generateToken } from "../helpers";
 import { deleteCookie, setCookie } from "hono/cookie";
@@ -66,6 +66,21 @@ authRouter.post("/logout", async (c) => {
   });
 
   return c.json({ message: "Logout successful" });
+});
+
+authRouter.get("/me", async (c) => {
+  const db = dbConn();
+  const payload = c.get("jwtPayload");
+
+  try {
+    const user = getUserById(db, payload.sub);
+    if (!user) return c.json({ error: "User not found" }, 400);
+
+    return c.json({ id: user.id, email: user.email });
+  } catch (error) {
+    console.error("Error fetching user data: ", error);
+    return c.json({ error: "Internal Server Error" }, 500);
+  }
 });
 
 export default authRouter;
