@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, afterEach } from "bun:test";
-import { insertUser } from "./queries";
+import { getUserByEmail, insertUser } from "./queries";
 import { createTestDb } from "../test/test-db";
 import { Database } from "bun:sqlite";
 
@@ -49,5 +49,24 @@ describe("insertUser", () => {
         expect(error.message).toMatch(/password must not be empty/);
       }
     }
+  });
+});
+
+describe("getUserByEmail", () => {
+  it("should return user by a given email", async () => {
+    const email = "test@test.com";
+    const password = "password123";
+    await insertUser(db, email, password);
+
+    const user = getUserByEmail(db, email);
+    console.log(user);
+    expect(user).toBeDefined();
+  });
+
+  it("should return null when there is no user with that email", async () => {
+    const email = "test@test.com";
+    const user = getUserByEmail(db, email);
+    console.log(user);
+    expect(user).toBeNull();
   });
 });
