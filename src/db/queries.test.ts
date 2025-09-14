@@ -7,7 +7,8 @@ describe("insertUser", () => {
     const db = dbConn();
     const email = "test@test.com";
     const password = "password123";
-    const userId = insertUser(db, email, password);
+    const userId = await insertUser(db, email, password);
+    console.log(userId);
     expect(userId).toBeDefined();
   });
 });

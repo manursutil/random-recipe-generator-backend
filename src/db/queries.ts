@@ -11,9 +11,9 @@ export const insertUser = async (
 
   const insertQuery = db.query(
     `
-        INSERT INTO users (id, email, password_hash)
-        VALUES (?, ?, ?)
-        RETURN id
+    INSERT INTO users (id, email, password_hash)
+    VALUES (?, ?, ?)
+    RETURNING id
     `
   );
 
