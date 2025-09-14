@@ -3,7 +3,7 @@ import { signupValidator } from "../schemas/signup-schema";
 import { getUserByEmail, insertUser } from "../db/queries";
 import { dbConn } from "../db/db";
 import { cookieOptions, generateToken } from "../helpers";
-import { setCookie } from "hono/cookie";
+import { deleteCookie, setCookie } from "hono/cookie";
 
 const authRouter = new Hono();
 
@@ -55,6 +55,17 @@ authRouter.post("/login", signupValidator, async (c) => {
     console.error(error);
     return c.json({ error: "Internal server error" }, 500);
   }
+});
+
+authRouter.post("/logout", async (c) => {
+  deleteCookie(c, "authToken", {
+    path: "/",
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Lax",
+    httpOnly: true,
+  });
+
+  return c.json({ message: "Logout successful" });
 });
 
 export default authRouter;
