@@ -1,7 +1,7 @@
 import { Database } from "bun:sqlite";
 import { join } from "path";
 
-const dbPath = join(".", "db.sqlite");
+const dbPath = process.env.DB_PATH ?? join(".", "db.sqlite");
 
 let db: Database;
 
@@ -9,6 +9,7 @@ export const dbConn = () => {
   if (!db) {
     db = new Database(dbPath);
     db.run("PRAGMA journal_mode = WAL;");
+    db.run("PRAGMA foreign_keys = ON;");
 
     applySchema(db);
   }
@@ -27,7 +28,8 @@ export const applySchema = (dbInstance: Database) => {
           user_id TEXT NOT NULL,
           recipe_id INTEGER NOT NULL,
           created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE(user_id, recipe_id)
+          UNIQUE(user_id, recipe_id),
+          FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
     `);
 };

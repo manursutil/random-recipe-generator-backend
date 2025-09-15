@@ -2,26 +2,32 @@ import axios from "axios";
 
 const baseUrl = "https://www.themealdb.com/api/json/v1/1/";
 
+const http = axios.create({
+  baseURL: baseUrl,
+  timeout: 8000,
+  headers: { Accept: "application/json" },
+});
+
 export const getRandomRecipe = async () => {
-  const response = await axios.get(`${baseUrl}random.php`);
-  return response.data;
+  const { data } = await http.get("random.php");
+  return data;
 };
 
 export const getRecipeById = async (id: number) => {
-  const response = await axios.get(`${baseUrl}lookup.php?i=${id}`);
-  return response.data;
+  const { data } = await http.get(`lookup.php?i=${id}`);
+  return data;
 };
 
 export const getRecipeByCategory = async (category: string) => {
-  const response = await axios.get(
-    `${baseUrl}filter.php?c=${encodeURIComponent(category)}`
+  const { data } = await http.get(
+    `filter.php?c=${encodeURIComponent(category)}`
   );
-  return response.data;
+  return data;
 };
 
 export const getRecipeByArea = async (area: string) => {
-  const response = await axios.get(
-    `${baseUrl}filter.php?a=${encodeURIComponent(area)}`
+  const { data } = await http.get(
+    `filter.php?a=${encodeURIComponent(area)}`
   );
-  return response.data;
+  return data;
 };

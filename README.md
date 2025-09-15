@@ -19,14 +19,21 @@ bun install
 
 2. Configure environment
 
-- Create a `.env` file at the repo root:
+- Copy `.env.example` to `.env` and adjust values:
 
 ```
-JWT_SECRET=your_dev_secret
+JWT_SECRET=replace_me
 NODE_ENV=development
+PORT=3000
+ALLOWED_ORIGIN=http://localhost:5173
+DB_PATH=./db.sqlite
 ```
 
-Note: Bun loads `.env` automatically. The server will fail to start if `JWT_SECRET` is missing.
+Notes:
+
+- Bun loads `.env` automatically. The server fails to start if `JWT_SECRET` is missing.
+- `ALLOWED_ORIGIN` is required for cookie auth with CORS. Set it to your frontend URL in production.
+- `DB_PATH` can point to a mounted volume in production.
 
 3. Run the server (hot reload)
 
@@ -34,7 +41,7 @@ Note: Bun loads `.env` automatically. The server will fail to start if `JWT_SECR
 bun run dev
 ```
 
-Server listens on `http://localhost:3000` and creates `db.sqlite` automatically.
+Server listens on `http://localhost:<PORT>` and creates `db.sqlite` (or `DB_PATH`) automatically.
 
 ## Database
 
@@ -71,7 +78,7 @@ Saved Recipes (authenticated; under `/auth` so JWT + CSRF apply)
 Notes
 
 - JWT is stored in an `httpOnly` cookie `authToken`.
-- CSRF protection is enabled for unsafe methods under `/auth/*`. Your client must include the expected CSRF token header per `hono/csrf` usage.
+- CSRF protection is enabled on `/auth/*`. A CSRF token cookie is issued on GET requests; clients must echo it via `X-CSRF-Token` on POST/PUT/PATCH/DELETE.
 - TheMealDB is used as the recipe source; responses are proxied without modification.
 
 ## Example (signup + save)

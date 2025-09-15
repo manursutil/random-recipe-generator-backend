@@ -1,0 +1,20 @@
+services:
+  api:
+    build:
+      context: .
+    image: recipe-backend:latest
+    container_name: recipe-backend
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - DB_PATH=/data/db.sqlite
+    volumes:
+      - db-data:/data
+    restart: unless-stopped
+
+volumes:
+  db-data:
+
