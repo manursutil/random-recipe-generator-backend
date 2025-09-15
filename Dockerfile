@@ -8,12 +8,11 @@ RUN bun install --frozen-lockfile
 COPY src ./src
 COPY README.md ./
 
+RUN mkdir -p /data && chown -R bun:bun /data
+
 ENV NODE_ENV=production
 ENV PORT=3000
 
 EXPOSE 3000
 
-USER bun
-
 CMD ["bun", "run", "src/index.ts"]
-
