@@ -4,8 +4,8 @@ import { logger } from "hono/logger";
 import { csrf } from "hono/csrf";
 
 import recipeRouter from "./routes/recipeRouter";
-import { dbConn } from "./db/db";
 import authRouter from "./routes/authRouter";
+import savedRecipesRouter from "./routes/savedRecipesRouter";
 import { jwt } from "hono/jwt";
 
 const app = new Hono();
@@ -39,6 +39,7 @@ app.get("/", (c) => {
 
 app.route("/recipes", recipeRouter);
 app.route("/auth", authRouter);
+app.route("/auth", savedRecipesRouter);
 
 const server = Bun.serve({
   port: 3000,
